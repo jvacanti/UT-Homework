@@ -515,7 +515,7 @@ latlon_df
 
 
 ```python
-api_key = "2316b03031cfb536c195835482e8bc0c"
+api_key = ""
 url = "http://api.openweathermap.org/data/2.5/weather?q="
 units = "metric"
 
