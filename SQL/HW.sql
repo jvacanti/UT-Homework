@@ -11,11 +11,11 @@ WHERE first_name IN ('Joe');
 
 -- HELP 2b. Find all actors whose last name contain the letters GEN:
 select first_name, last_name from actor
-WHERE last_name LIKE 'GEN%';
+WHERE last_name LIKE '%GEN%';
 
 -- HELP 2c. Find all actors whose last names contain the letters LI. This time, order the rows by last name and first name, in that order:
 select last_name, first_name from actor
-WHERE last_name LIKE 'LI%';
+WHERE last_name LIKE '%LI%';
 
 -- 2d. Using IN, display the country_id and country columns of the following countries: Afghanistan, Bangladesh, and China:
 select country_id, country from country
@@ -39,10 +39,10 @@ FROM actor
 GROUP BY last_name;
 
 -- HELP 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
-SELECT COUNT(last_name) AS count, last_name
+SELECT COUNT(last_name) AS `Frequency`, last_name
 FROM actor
-WHERE COUNT(last_name) > 1
 GROUP BY last_name
+HAVING `Frequency` > 1
 ORDER BY COUNT(last_name) DESC;
 
 -- 4c. Oh, no! The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS. Write a query to fix the record.
@@ -51,8 +51,13 @@ SET first_name = 'HARPO'
 WHERE first_name = 'GROUCHO';
 
 -- HELP 4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO. Otherwise, change the first name to MUCHO GROUCHO, as that is exactly what the actor will be with the grievous error. BE CAREFUL NOT TO CHANGE THE FIRST NAME OF EVERY ACTOR TO MUCHO GROUCHO, HOWEVER! (Hint: update the record using a unique identifier.)
+update actor
+SET first_name = CASE WHEN first_name = 'HARPO' THEN 'GROUCHO' ELSE 'MUCHO GROUCHO' END WHERE actor_id=172;
+
 
 -- HELP 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
+SHOW CREATE TABLE address;
+
 
 -- 6a. Use JOIN to display the first and last names, as well as the address, of each staff member. Use the tables staff and address:
 select
@@ -67,11 +72,13 @@ join address using (address_id)
 select
 	staff.first_name,
     staff.last_name,
-    payment.amount,
-    payment.payment_date
-from payment
-WHERE payment_date = `2005-09-%`
-join staff using (staff_id)
+    SUM(payment.amount),
+    staff.staff_id,
+    payment.staff_id
+from staff
+join payment on (staff.staff_id = payment.staff_id)
+WHERE month(payment.payment_date) = 08 AND year(payment.payment_date) = 2005
+GROUP BY staff.staff_id
 ;
 
 -- 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join.
@@ -111,9 +118,19 @@ ORDER BY last_name ASC
 
 -- HELP 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters K and Q have also soared in popularity. Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.
 
-SELECT title
-FROM film 
-WHERE title LIKE 'Q%' OR 'K%'
+SELECT 
+    title
+FROM
+    film
+WHERE
+    title LIKE 'Q%'
+        OR title LIKE 'K%'
+        AND language_id IN (SELECT 
+            language_id
+        FROM
+            language
+        WHERE
+            name = 'ENGLISH')
 ;
 
 -- 7b. Use subqueries to display all actors who appear in the film Alone Trip.
@@ -174,9 +191,29 @@ where film_id in (
 ;
 
 -- 7e. Display the most frequently rented movies in descending order.
+select title, COUNT(title) as 'Rental Count'
+from film
+join inventory on (film.film_id = inventory.film_id)
+join rental on (inventory.inventory_id = rental.inventory_id)
+GROUP BY title
+ORDER BY `Rental Count` DESC
+;
 
 
 -- 7f. Write a query to display how much business, in dollars, each store brought in.
+select 
+	store.store_id,
+    SUM(payment.amount)
+from
+	payment
+JOIN rental on (payment.rental_id = rental.rental_id)
+JOIN inventory on (rental.inventory_id = inventory.inventory_id)
+JOIN store on (store.store_id = inventory.store_id)
+GROUP BY store_id
+;
+
+
+
 
 -- HELP 7g. Write a query to display for each store its store ID, city, and country.
 
@@ -184,18 +221,24 @@ select
 	store.store_id,
     city.city,
     country.country
-FROM store a
-JOIN city b ON a.store_id = b.store_id
-JOIN country c ON b.country_id = c.country_id
+FROM store
+JOIN address ON (store.address_id = address.address_id)
+JOIN city ON (address.city_id = city.city_id)
+JOIN country ON (country.country_id = city.country_id)
 ;
 
     
 
 -- 7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
 
+
+
 -- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+CREATE VIEW Top_Five AS
+
 
 -- 8b. How would you display the view that you created in 8a?
+
 
 -- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
 
