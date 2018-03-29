@@ -9,11 +9,11 @@ select CONCAT(first_name, ' ' , last_name) as Actor_Name FROM actor;
 select first_name, last_name, actor_id from actor
 WHERE first_name IN ('Joe');
 
--- HELP 2b. Find all actors whose last name contain the letters GEN:
+-- 2b. Find all actors whose last name contain the letters GEN:
 select first_name, last_name from actor
 WHERE last_name LIKE '%GEN%';
 
--- HELP 2c. Find all actors whose last names contain the letters LI. This time, order the rows by last name and first name, in that order:
+-- 2c. Find all actors whose last names contain the letters LI. This time, order the rows by last name and first name, in that order:
 select last_name, first_name from actor
 WHERE last_name LIKE '%LI%';
 
@@ -38,7 +38,7 @@ SELECT COUNT(last_name) AS COUNT, last_name
 FROM actor
 GROUP BY last_name;
 
--- HELP 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
+-- 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
 SELECT COUNT(last_name) AS `Frequency`, last_name
 FROM actor
 GROUP BY last_name
@@ -50,12 +50,12 @@ UPDATE actor
 SET first_name = 'HARPO'
 WHERE first_name = 'GROUCHO';
 
--- HELP 4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO. Otherwise, change the first name to MUCHO GROUCHO, as that is exactly what the actor will be with the grievous error. BE CAREFUL NOT TO CHANGE THE FIRST NAME OF EVERY ACTOR TO MUCHO GROUCHO, HOWEVER! (Hint: update the record using a unique identifier.)
+-- 4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO. Otherwise, change the first name to MUCHO GROUCHO, as that is exactly what the actor will be with the grievous error. BE CAREFUL NOT TO CHANGE THE FIRST NAME OF EVERY ACTOR TO MUCHO GROUCHO, HOWEVER! (Hint: update the record using a unique identifier.)
 update actor
 SET first_name = CASE WHEN first_name = 'HARPO' THEN 'GROUCHO' ELSE 'MUCHO GROUCHO' END WHERE actor_id=172;
 
 
--- HELP 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
+-- 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
 SHOW CREATE TABLE address;
 
 
@@ -68,7 +68,7 @@ from staff
 join address using (address_id)
 ;
 
--- HELP 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use tables staff and payment.
+-- 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use tables staff and payment.
 select
 	staff.first_name,
     staff.last_name,
@@ -116,7 +116,7 @@ GROUP BY customer_id
 ORDER BY last_name ASC
 ;
 
--- HELP 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters K and Q have also soared in popularity. Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.
+-- 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters K and Q have also soared in popularity. Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.
 
 SELECT 
     title
@@ -215,7 +215,7 @@ GROUP BY store_id
 
 
 
--- HELP 7g. Write a query to display for each store its store ID, city, and country.
+-- 7g. Write a query to display for each store its store ID, city, and country.
 
 select
 	store.store_id,
