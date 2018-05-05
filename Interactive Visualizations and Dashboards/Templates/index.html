@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+           <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+           <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+           <!-- Include all compiled plugins (below), or include individual files as needed -->
+           <script src="js/bootstrap.min.js"></script>
+           <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </head>
+  <body>
+  
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+          <a class="navbar-brand" href="index.html">Belly Button Biodiversity</a>
+
+          </button>
+        
+          
+    </nav>
+</head>
+<body>
+    <div id="bar"></div>
+    <script>
+        
+        // Plot the default route once the page loads
+        var default_url = "/emoji_char";
+        Plotly.d3.json(default_url, function(error, response) {
+            if (error) return console.warn(error);
+            var data = [response];
+            var layout = { margin: { t: 30, b:100 } }
+            Plotly.plot("bar", data, layout)
+        })
+        // Update the plot with new data
+        function updatePlotly(newdata) {
+            var Bar = document.getElementById('bar');
+            Plotly.restyle(Bar, 'x', [newdata.x])
+            Plotly.restyle(Bar, 'y', [newdata.y])
+        }
+        // Get new data whenever the dropdown selection changes
+        function getData(route) {
+            console.log(route);
+            Plotly.d3.json(`/${route}`, function(error, data) {
+                console.log("newdata", data);
+                updatePlotly(data);
+            });
+        }
+    </script>
+
+    <select id="selDataset" onchange="getData(this.value)">
+        <option value="emoji_char">Sample</option>
+        <option value="emoji_id">Sample</option>
+        <option value="emoji_name">Sample</option>
+    </select>
+</body>
+</html>
